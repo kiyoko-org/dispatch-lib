@@ -1,8 +1,34 @@
 {
-	"name": "dispatch-lib",
-	"version": "0.0.1",
+	"name": "@kiyoko-org/dispatch-lib",
+	"version": "0.0.2",
 	"module": "index.ts",
 	"type": "module",
+	"description": "A dispatch library for managing emergency services and officer dispatch",
+	"main": "index.ts",
+	"files": [
+		"index.ts",
+		"types.ts",
+		"id.ts",
+		"database.types.ts",
+		"react/**/*"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kiyoko-org/dispatch-lib.git"
+	},
+	"keywords": [
+		"dispatch",
+		"emergency",
+		"officer",
+		"management",
+		"supabase"
+	],
+	"author": "kiyoko-org",
+	"license": "MIT",
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com",
+		"access": "public"
+	},
 	"devDependencies": {
 		"@types/bun": "latest"
 	},
