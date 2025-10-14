@@ -140,27 +140,21 @@ export type Database = {
       reports: {
         Row: {
           attachments: string[] | null
-          brief_description: string | null
           category_id: number | null
-          city: string | null
           created_at: string
           id: number
           incident_date: string | null
           incident_time: string | null
           incident_title: string | null
           injuries_reported: string | null
-          is_anonymous: boolean | null
           is_archived: boolean | null
           latitude: number
           longitude: number
           nearby_landmark: string | null
           number_of_witnesses: string | null
           property_damage: string | null
-          province: string | null
           reporter_id: string
-          request_follow_up: boolean | null
           resolved_at: string | null
-          share_with_community: boolean | null
           status: string
           street_address: string | null
           sub_category: number | null
@@ -171,27 +165,21 @@ export type Database = {
         }
         Insert: {
           attachments?: string[] | null
-          brief_description?: string | null
           category_id?: number | null
-          city?: string | null
           created_at?: string
           id?: number
           incident_date?: string | null
           incident_time?: string | null
           incident_title?: string | null
           injuries_reported?: string | null
-          is_anonymous?: boolean | null
           is_archived?: boolean | null
           latitude: number
           longitude: number
           nearby_landmark?: string | null
           number_of_witnesses?: string | null
           property_damage?: string | null
-          province?: string | null
           reporter_id?: string
-          request_follow_up?: boolean | null
           resolved_at?: string | null
-          share_with_community?: boolean | null
           status?: string
           street_address?: string | null
           sub_category?: number | null
@@ -202,27 +190,21 @@ export type Database = {
         }
         Update: {
           attachments?: string[] | null
-          brief_description?: string | null
           category_id?: number | null
-          city?: string | null
           created_at?: string
           id?: number
           incident_date?: string | null
           incident_time?: string | null
           incident_title?: string | null
           injuries_reported?: string | null
-          is_anonymous?: boolean | null
           is_archived?: boolean | null
           latitude?: number
           longitude?: number
           nearby_landmark?: string | null
           number_of_witnesses?: string | null
           property_damage?: string | null
-          province?: string | null
           reporter_id?: string
-          request_follow_up?: boolean | null
           resolved_at?: string | null
-          share_with_community?: boolean | null
           status?: string
           street_address?: string | null
           sub_category?: number | null
