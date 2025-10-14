@@ -1,0 +1,17 @@
+{
+	"name": "dispatch-lib",
+	"version": "0.0.1",
+	"module": "index.ts",
+	"type": "module",
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5",
+		"react": "^19.0.0"
+	},
+	"dependencies": {
+		"@supabase/supabase-js": "^2.75.0",
+		"zod": "^4.1.12"
+	}
+}
