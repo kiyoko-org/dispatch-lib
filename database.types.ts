@@ -103,6 +103,7 @@ export type Database = {
       }
       officers: {
         Row: {
+          assigned_report_id: number | null
           badge_number: string | null
           created_at: string | null
           first_name: string | null
@@ -114,6 +115,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          assigned_report_id?: number | null
           badge_number?: string | null
           created_at?: string | null
           first_name?: string | null
@@ -125,6 +127,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          assigned_report_id?: number | null
           badge_number?: string | null
           created_at?: string | null
           first_name?: string | null
@@ -135,7 +138,15 @@ export type Database = {
           role?: Database["public"]["Enums"]["role"]
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "officers_assigned_report_id_fkey"
+            columns: ["assigned_report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
