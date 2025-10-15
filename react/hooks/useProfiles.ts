@@ -3,7 +3,12 @@ import type { Database } from "../../database.types"
 import { getDispatchClient } from "../.."
 import { cidrv4 } from "zod"
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"]
+type Profile = Database["public"]["Tables"]["profiles"]["Row"] & {
+	email?: string
+	created_at?: string
+	last_sign_in_at?: string
+	reports_count?: number
+}
 
 type UseProfilesReturn = {
 	profiles: Profile[]
@@ -22,26 +27,40 @@ export const useProfiles = (): UseProfilesReturn => {
 		const { data: profiles, error } = await client.supabaseClient.from('profiles').select('*');
 		if (error) {
 			console.error("Error fetching profiles:", error)
+			setLoading(false);
+			return;
+		}
+
+		if (!profiles) {
+			setLoading(false);
+			return;
 		}
 
 		// Get auth data using admin API
-		const userIds = profiles?.map(p => p.id) || [];
-		// Note: This requires admin privileges
-		const authData = await Promise.all(
-			userIds.map(id => client.supabaseClient.auth.admin.getUserById(id))
-		);	
+		const userIds = profiles.map(p => p.id);
+		
+		const [authData, reportsData] = await Promise.all([
+			Promise.all(userIds.map(id => client.supabaseClient.auth.admin.getUserById(id))),
+			Promise.all(userIds.map(id => 
+				client.supabaseClient
+					.from('reports')
+					.select('id', { count: 'exact', head: true })
+					.eq('reporter_id', id)
+			))
+		]);
 
 		// Merge the data
-		const merged = profiles?.map((profile, i) => ({
+		const merged = profiles.map((profile, i) => ({
 			...profile,
-			email: authData[i].data.user?.email,
-			created_at: authData[i].data.user?.created_at,
-			last_sign_in_at: authData[i].data.user?.last_sign_in_at
+			email: authData[i]?.data.user?.email,
+			created_at: authData[i]?.data.user?.created_at,
+			last_sign_in_at: authData[i]?.data.user?.last_sign_in_at,
+			reports_count: reportsData[i]?.count || 0
 		}));
 
 		setLoading(false);
 
-		setProfiles(merged as Profile[])
+		setProfiles(merged)
 	}
 
 	useEffect(() => {
