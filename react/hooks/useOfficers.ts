@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { getDispatchClient } from "../.."
 import type { Database } from "../../database.types"
 
-type Officer = Database["public"]["Tables"]["profiles"]["Row"]
+type Officer = Database["public"]["Tables"]["officers"]["Row"]
 
 type UseOfficersReturn = {
 	officers: Officer[]

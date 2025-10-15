@@ -101,10 +101,10 @@ export type Database = {
         }
         Relationships: []
       }
-      profiles: {
+      officers: {
         Row: {
-          avatar_url: string | null
           badge_number: string | null
+          created_at: string | null
           first_name: string | null
           id: string
           last_name: string | null
@@ -114,8 +114,8 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          avatar_url?: string | null
           badge_number?: string | null
+          created_at?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
@@ -125,13 +125,43 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          avatar_url?: string | null
           badge_number?: string | null
+          created_at?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
           middle_name?: string | null
           rank?: string | null
+          role?: Database["public"]["Enums"]["role"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          middle_name: string | null
+          role: Database["public"]["Enums"]["role"]
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          middle_name?: string | null
+          role?: Database["public"]["Enums"]["role"]
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          middle_name?: string | null
           role?: Database["public"]["Enums"]["role"]
           updated_at?: string | null
         }
@@ -225,6 +255,29 @@ export type Database = {
             foreignKeyName: "reports_reporter_id_fkey"
             columns: ["reporter_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_data: {
+        Row: {
+          id: string
+          settings_json: Json | null
+        }
+        Insert: {
+          id?: string
+          settings_json?: Json | null
+        }
+        Update: {
+          id?: string
+          settings_json?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_data_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },

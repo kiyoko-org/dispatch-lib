@@ -170,7 +170,7 @@ export class DispatchClient {
 	}
 
 	fetchOfficers = async () => {
-		return this.supabase.from('profiles').select('*').eq('role', 'officer');
+		return this.supabase.from('officers').select('*');
 	}
 
 	addCategory = async (payload: Partial<Database["public"]["Tables"]["categories"]["Update"]>) => {
@@ -202,7 +202,7 @@ export class DispatchClient {
 				badge_number: badgeNumber,
 				role: "officer"
 			},
-			email_confirm: false
+			email_confirm: false,
 		})
 	}
 
