@@ -221,6 +221,10 @@ export class DispatchClient {
 	deleteReport = async (id: number) => {
 		return this.supabase.from('reports').delete().eq('id', id).select();
 	}
+
+	getReportInfo = async (id: number) => {
+		return this.supabase.from('reports').select('*').eq('id', id).single();
+	}
 }
 
 /**

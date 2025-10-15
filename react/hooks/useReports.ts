@@ -9,6 +9,7 @@ type UseReportsReturn = {
 	addReport: (payload: Database["public"]["Tables"]["reports"]["Insert"]) => Promise<{ data: any[] | null; error: any }>;
 	updateReport: (id: number, payload: Partial<Database["public"]["Tables"]["reports"]["Update"]>) => Promise<{ data: any[] | null; error: any }>;
 	deleteReport: (id: number) => Promise<{ data: any[] | null; error: any }>;
+	getReportInfo: (id: number) => Promise<{ data: Database["public"]["Tables"]["reports"]["Row"] | null; error: any }>;
 }
 
 export function useReports(): UseReportsReturn {
@@ -66,12 +67,21 @@ export function useReports(): UseReportsReturn {
 		return { data, error };
 	}
 
+	async function getReportInfo(id: number) {
+		const { data, error } = await client.getReportInfo(id);
+		if (error) {
+			console.error("Error fetching report info:", error);
+		}
+		return { data, error };
+	}
+
 	return {
 		reports,
 		fetchReports: client.fetchReports,
 		addReport,
 		updateReport,
 		deleteReport,
+		getReportInfo,
 	}
 }
 

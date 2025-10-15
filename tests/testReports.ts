@@ -4,34 +4,39 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error("Missing Supabase environment variables")
-  process.exit(1)
+	console.error("Missing Supabase environment variables")
+	process.exit(1)
 }
 
 const client = initDispatchClient({
-  supabaseClientConfig: {
-    url: supabaseUrl,
-    anonymousKey: supabaseKey,
-    detectSessionInUrl: true,
-  },
+	supabaseClientConfig: {
+		url: supabaseUrl,
+		anonymousKey: supabaseKey,
+		detectSessionInUrl: true,
+	},
 })
 
 async function testReports() {
-  console.log("Testing addReport...")
-  const addResult = await client.addReport({
-    latitude: 14.5995,
-    longitude: 120.9842,
-    incident_title: "Test Incident",
-    what_happened: "This is a test report",
-    status: "pending",
-  })
-  
-  console.log("Add Report Result:", addResult)
-  
-  console.log("\nTesting fetchReports...")
-  const fetchResult = await client.fetchReports()
-  
-  console.log("Fetch Reports Result:", fetchResult)
+	console.log("Testing addReport...")
+	const addResult = await client.addReport({
+		latitude: 14.5995,
+		longitude: 120.9842,
+		incident_title: "Test Incident",
+		what_happened: "This is a test report",
+		status: "pending",
+	})
+
+	console.log("Add Report Result:", addResult)
+
+	console.log("\nTesting fetchReports...")
+	const fetchResult = await client.fetchReports()
+
+	console.log("Fetch Reports Result:", fetchResult)
+
+	const reportId = 40
+	console.log(`\nTesting getReportInfo with ID: ${reportId}...`)
+	const reportInfoResult = await client.getReportInfo(reportId)
+	console.log("Get Report Info Result:", reportInfoResult)
 }
 
 testReports()
