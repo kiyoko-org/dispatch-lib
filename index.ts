@@ -190,15 +190,16 @@ export class DispatchClient {
 		return this.supabase.from('categories').delete().eq('id', id).select();
 	}
 
-	createOfficer = async (badgeNumber: string, rank: string, first_name: string, last_name: string, password: string) => {
+	createOfficer = async (badgeNumber: string, email: string, rank: string, first_name: string, middle_name: string, last_name: string, password: string) => {
 		return this.supabase.auth.admin.createUser({
-			email: "stvndvmrnd@gmail.com",
+			email: email,
 			password: password,
 			user_metadata: {
-				badge_number: badgeNumber,
-				rank: rank,
 				first_name: first_name,
+				middle_name: middle_name,
 				last_name: last_name,
+				rank: rank,
+				badge_number: badgeNumber,
 				role: "officer"
 			},
 			email_confirm: false
