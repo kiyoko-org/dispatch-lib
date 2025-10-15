@@ -18,5 +18,6 @@ const client = initDispatchClient({
 
 client.fetchOfficers().then(console.log)
 
-client.assignToReport("32171ad2-dde7-4ad4-a8a1-843482afb3ac", 43).then(console.log)
+client.assignToReport("04198b30-a758-43e3-a7fc-de8734779820", 49).then(console.log)
+
 

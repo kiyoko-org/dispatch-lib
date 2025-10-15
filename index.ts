@@ -3,8 +3,6 @@ import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
 import { categorySchema, hotlineSchema, reportSchema } from "./types";
-import { partial } from "zod/mini";
-import type Database from "bun:sqlite";
 
 interface SupabaseClientOptions {
 	url: string;
