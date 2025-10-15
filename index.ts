@@ -3,6 +3,8 @@ import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
 import { categorySchema, hotlineSchema, reportSchema } from "./types";
+import { partial } from "zod/mini";
+import type Database from "bun:sqlite";
 
 interface SupabaseClientOptions {
 	url: string;
@@ -165,6 +167,17 @@ export class DispatchClient {
 		return this.supabase.from('hotlines').delete().eq('id', id).select();
 	}
 
+	fetchProfiles = async () => {
+		return this.supabase.rpc("get_profiles_with_emails")
+	}
+
+	updateProfile = async (
+		id: string,
+		payload: Partial<Database["public"]["Tables"]["profiles"]["Update"]>
+	) => {
+		return this.supabase.from('categories').update(payload).eq('id', id).select();
+	}
+
 	getCategories = async () => {
 		return this.supabase.from('categories').select('*');
 	}
@@ -235,8 +248,15 @@ export class DispatchClient {
 		return this.supabase.from('reports').select('*').eq('id', id).single();
 	}
 
-	assignToReport = async (officerId: number, reportId: number) => {
+	assignToReport = async (officerId: string, reportId: number) => {
 		return this.supabase.from('officers').update({ assigned_report_id: reportId }).eq('id', officerId).select();
+	}
+
+	updateOfficer = async (
+		id: string,
+		payload: Partial<Database["public"]["Tables"]["officers"]["Update"]>
+	) => {
+		return this.supabase.from('officers').update(payload).eq('id', id).select();
 	}
 }
 
@@ -261,5 +281,6 @@ export * from "./react/providers/auth-provider.tsx";
 export * from "./react/hooks/useHotlines.ts";
 export * from "./react/hooks/useCategories.ts";
 export * from "./react/hooks/useOfficers.ts";
+export * from "./react/hooks/useProfiles.ts";
 export * from "./react/hooks/useReports.ts";
 export * from "./react/hooks/useRealtimeReports.ts";

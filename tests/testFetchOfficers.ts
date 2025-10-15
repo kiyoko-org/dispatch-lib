@@ -16,10 +16,7 @@ const client = initDispatchClient({
 	},
 })
 
-// client.fetchOfficers().then(console.log)
-//
-// client.archiveReport(40).then(console.log)
+client.fetchOfficers().then(console.log)
 
-const resp = await client.createOfficer("69420", "baller", "steven", "tolentino", "miranda", "ballsdeep")
+client.assignToReport("32171ad2-dde7-4ad4-a8a1-843482afb3ac", 43).then(console.log)
 
-console.log(resp)
