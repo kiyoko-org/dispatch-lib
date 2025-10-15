@@ -1,50 +1,77 @@
-import { useEffect, useState } from "react"
-import { getDispatchClient } from "../.."
+import { useEffect, useState } from "react";
 import type { Database } from "../../database.types"
-
-type Category = Database["public"]["Tables"]["categories"]["Row"]
+import { getDispatchClient } from "../..";
+import { type PostgrestSingleResponse } from "@supabase/supabase-js";
 
 type UseReportsReturn = {
-	categories: Category[],
-	loading: boolean
+	reports: Database["public"]["Tables"]["reports"]["Row"][];
+	fetchReports?: () => Promise<PostgrestSingleResponse<any[]>>;
+	addReport: (payload: Database["public"]["Tables"]["reports"]["Insert"]) => Promise<{ data: any[] | null; error: any }>;
+	updateReport: (id: number, payload: Partial<Database["public"]["Tables"]["reports"]["Update"]>) => Promise<{ data: any[] | null; error: any }>;
+	deleteReport: (id: number) => Promise<{ data: any[] | null; error: any }>;
 }
 
 export function useReports(): UseReportsReturn {
+	const [reports, setReports] = useState<Database["public"]["Tables"]["reports"]["Row"][]>([]);
 
-	const [categories, setCategories] = useState<Category[]>([])
-	const [loading, setLoading] = useState<boolean>(false)
-
-	const client = getDispatchClient()
-
-	const fetchcategories = async () => {
-		setLoading(true)
-		const { data, error } = await client.getCategories()
-
-		if (error) {
-			console.error("Error fetching categories:", error.message)
-			setLoading(false)
-			return
-		}
-
-		if (data) {
-			setCategories(data)
-		}
-		setLoading(false)
-	}
+	const client = getDispatchClient();
+	const fetchReports = client.fetchReports;
 
 	useEffect(() => {
+		async function init() {
+			const { data, error } = await fetchReports()
 
-		const init = async () => {
-			await fetchcategories()
+			if (error) {
+				console.error("Error fetching reports:", error);
+			}
+
+			if (data) {
+				setReports(data);
+			}
 		}
 
 		init()
+	}, [fetchReports])
 
-	}, [])
+	async function addReport(payload: Database["public"]["Tables"]["reports"]["Insert"]) {
+		const { data, error } = await client.addReport(payload);
+		if (error) {
+			console.error("Error adding report:", error);
+		}
+		if (data) {
+			setReports(prev => [...prev, ...data]);
+		}
+		return { data, error };
+	}
 
+	async function updateReport(id: number, payload: Partial<Database["public"]["Tables"]["reports"]["Update"]>) {
+		const { data, error } = await client.updateReport(id, payload);
+		if (error) {
+			console.error("Error updating report:", error);
+		}
+		if (data && Array.isArray(data) && data.length > 0) {
+			setReports(prev => prev.map(r => (r.id === id ? (data[0] as typeof r) : r)));
+		}
+		return { data, error };
+	}
+
+	async function deleteReport(id: number) {
+		const { data, error } = await client.deleteReport(id);
+		if (error) {
+			console.error("Error deleting report:", error);
+		}
+		if (!error) {
+			setReports(prev => prev.filter(r => r.id !== id));
+		}
+		return { data, error };
+	}
 
 	return {
-		categories: categories,
-		loading: loading
+		reports,
+		fetchReports: client.fetchReports,
+		addReport,
+		updateReport,
+		deleteReport,
 	}
 }
+

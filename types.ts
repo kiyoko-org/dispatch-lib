@@ -19,3 +19,31 @@ export const categorySchema = z.object({
 })
 
 export type Category = z.infer<typeof categorySchema>;
+
+export const reportSchema = z.object({
+	id: z.number().optional(),
+	reporter_id: z.string().optional(),
+	category_id: z.number().nullable().optional(),
+	sub_category: z.number().nullable().optional(),
+	incident_title: z.string().nullable().optional(),
+	what_happened: z.string().nullable().optional(),
+	who_was_involved: z.string().nullable().optional(),
+	incident_date: z.string().nullable().optional(),
+	incident_time: z.string().nullable().optional(),
+	latitude: z.number(),
+	longitude: z.number(),
+	street_address: z.string().nullable().optional(),
+	nearby_landmark: z.string().nullable().optional(),
+	injuries_reported: z.string().nullable().optional(),
+	property_damage: z.string().nullable().optional(),
+	suspect_description: z.string().nullable().optional(),
+	number_of_witnesses: z.string().nullable().optional(),
+	witness_contact_info: z.string().nullable().optional(),
+	attachments: z.array(z.string()).nullable().optional(),
+	status: z.string().optional().default("pending"),
+	is_archived: z.boolean().nullable().optional().default(false),
+	resolved_at: z.string().nullable().optional(),
+	created_at: z.string().optional(),
+})
+
+export type Report = z.infer<typeof reportSchema>;

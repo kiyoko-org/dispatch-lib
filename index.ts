@@ -2,7 +2,7 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
-import { categorySchema, hotlineSchema } from "./types";
+import { categorySchema, hotlineSchema, reportSchema } from "./types";
 
 interface SupabaseClientOptions {
 	url: string;
@@ -200,6 +200,27 @@ export class DispatchClient {
 	archiveReport = async (report_id: number) => {
 		return this.supabase.from('reports').update({ is_archived: true }).eq('id', report_id).select();
 	}
+
+	fetchReports = async () => {
+		return this.supabase.from('reports').select('*');
+	}
+
+	addReport = async (payload: Database["public"]["Tables"]["reports"]["Insert"]) => {
+		const validated = reportSchema.parse(payload);
+		return this.supabase.from('reports').insert(validated).select();
+	}
+
+	updateReport = async (
+		id: number,
+		payload: Partial<Database["public"]["Tables"]["reports"]["Update"]>
+	) => {
+		const validated = reportSchema.partial().parse(payload);
+		return this.supabase.from('reports').update(validated).eq('id', id).select();
+	}
+
+	deleteReport = async (id: number) => {
+		return this.supabase.from('reports').delete().eq('id', id).select();
+	}
 }
 
 /**
@@ -223,3 +244,4 @@ export * from "./react/providers/auth-provider.tsx";
 export * from "./react/hooks/useHotlines.ts";
 export * from "./react/hooks/useCategories.ts";
 export * from "./react/hooks/useOfficers.ts";
+export * from "./react/hooks/useReports.ts";
