@@ -234,6 +234,10 @@ export class DispatchClient {
 	getReportInfo = async (id: number) => {
 		return this.supabase.from('reports').select('*').eq('id', id).single();
 	}
+
+	assignToReport = async (officerId: number, reportId: number) => {
+		return this.supabase.from('officers').update({ assigned_report_id: reportId }).eq('id', officerId).select();
+	}
 }
 
 /**
