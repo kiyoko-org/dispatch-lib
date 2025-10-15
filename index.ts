@@ -95,6 +95,14 @@ export class DispatchClient {
 	}
 
 	/**
+	 * Get the internal Supabase client for realtime subscriptions.
+	 * This is needed for realtime hooks that need direct access to the client.
+	 */
+	get supabaseClient() {
+		return this.supabase;
+	}
+
+	/**
 	 * Example helper that uses the private supabase client to return a safe session result.
 	 * Consumers can call this via the singleton.
 	 */
@@ -249,3 +257,4 @@ export * from "./react/hooks/useHotlines.ts";
 export * from "./react/hooks/useCategories.ts";
 export * from "./react/hooks/useOfficers.ts";
 export * from "./react/hooks/useReports.ts";
+export * from "./react/hooks/useRealtimeReports.ts";
