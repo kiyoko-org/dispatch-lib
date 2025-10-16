@@ -144,6 +144,45 @@ export class DispatchClient {
 		return { error: undefined };
 	}
 
+	/**
+	 * Officer login method that validates officer role after authentication using badge number.
+	 */
+	async officerLogin(badgeNumber: string, password: string) {
+		// Use RPC function to get officer email by badge number
+		const { data: emailData, error: emailError } = await this.supabase
+			.rpc('get_officer_email_by_badge', { badge_number_param: badgeNumber });
+
+		if (emailError || !emailData || emailData.length === 0) {
+			console.error("Officer not found with badge number:", badgeNumber);
+			return { error: "Invalid badge number" };
+		}
+
+		const email = emailData[0].email;
+
+		// Now authenticate with the email
+		const { data, error } = await this.supabase.auth.signInWithPassword({
+			email,
+			password,
+		});
+
+		if (error) {
+			console.error("Officer login error:", error.message);
+			return { error: error.message };
+		}
+
+		// Check if the user has officer role
+		const user = data.user;
+		if (!user?.user_metadata?.role || user.user_metadata.role !== "officer") {
+			// Sign out the user if they don't have officer role
+			await this.supabase.auth.signOut();
+			console.error("Access denied: User is not an officer");
+			return { error: "Access denied: User is not an officer" };
+		}
+
+		console.info("Officer login successful:", data);
+		return { error: undefined };
+	}
+
 	fetchHotlines = async () => {
 		return this.supabase.from('hotlines').select('*');
 	}
@@ -213,7 +252,7 @@ export class DispatchClient {
 				badge_number: badgeNumber,
 				role: "officer"
 			},
-			email_confirm: false,
+			email_confirm: true, // Set to true to skip email confirmation
 		})
 	}
 
@@ -276,6 +315,7 @@ export function getDispatchClient() {
 export * from "./id.ts";
 export * from "./types";
 export * from "./react/providers/auth-provider.tsx";
+export * from "./react/providers/officer-auth-provider.tsx";
 export * from "./react/hooks/useHotlines.ts";
 export * from "./react/hooks/useCategories.ts";
 export * from "./react/hooks/useOfficers.ts";
