@@ -295,6 +295,10 @@ export class DispatchClient {
 	) => {
 		return this.supabase.from('officers').update(payload).eq('id', id).select();
 	}
+
+	deleteOfficer = async (id: string) => {
+		return this.supabase.from('officers').delete().eq('id', id).select();
+	}
 }
 
 /**
