@@ -257,7 +257,7 @@ export class DispatchClient {
 	}
 
 	archiveReport = async (report_id: number) => {
-		return this.supabase.from('reports').update({ is_archived: true }).eq('id', report_id).select();
+		return this.supabase.from('reports').update({ is_archived: true, archived_date: new Date().toISOString() }).eq('id', report_id).select();
 	}
 
 	fetchReports = async () => {

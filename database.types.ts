@@ -157,6 +157,7 @@ export type Database = {
           middle_name: string | null
           role: Database["public"]["Enums"]["role"]
           updated_at: string | null
+          user_type: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -166,6 +167,7 @@ export type Database = {
           middle_name?: string | null
           role?: Database["public"]["Enums"]["role"]
           updated_at?: string | null
+          user_type?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -175,11 +177,13 @@ export type Database = {
           middle_name?: string | null
           role?: Database["public"]["Enums"]["role"]
           updated_at?: string | null
+          user_type?: string | null
         }
         Relationships: []
       }
       reports: {
         Row: {
+          archived_date: string | null
           attachments: string[] | null
           category_id: number | null
           created_at: string
@@ -193,6 +197,7 @@ export type Database = {
           longitude: number
           nearby_landmark: string | null
           number_of_witnesses: string | null
+          officers_involved: string[] | null
           property_damage: string | null
           reporter_id: string
           resolved_at: string | null
@@ -205,6 +210,7 @@ export type Database = {
           witness_contact_info: string | null
         }
         Insert: {
+          archived_date?: string | null
           attachments?: string[] | null
           category_id?: number | null
           created_at?: string
@@ -218,6 +224,7 @@ export type Database = {
           longitude: number
           nearby_landmark?: string | null
           number_of_witnesses?: string | null
+          officers_involved?: string[] | null
           property_damage?: string | null
           reporter_id?: string
           resolved_at?: string | null
@@ -230,6 +237,7 @@ export type Database = {
           witness_contact_info?: string | null
         }
         Update: {
+          archived_date?: string | null
           attachments?: string[] | null
           category_id?: number | null
           created_at?: string
@@ -243,6 +251,7 @@ export type Database = {
           longitude?: number
           nearby_landmark?: string | null
           number_of_witnesses?: string | null
+          officers_involved?: string[] | null
           property_damage?: string | null
           reporter_id?: string
           resolved_at?: string | null
@@ -299,6 +308,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_officer_email_by_badge: {
+        Args: { badge_number_param: string }
+        Returns: {
+          email: string
+        }[]
+      }
       get_profiles_with_emails: {
         Args: Record<PropertyKey, never>
         Returns: {
