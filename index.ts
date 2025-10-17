@@ -212,7 +212,7 @@ export class DispatchClient {
 		id: string,
 		payload: Partial<Database["public"]["Tables"]["profiles"]["Update"]>
 	) => {
-		return this.supabase.from('categories').update(payload).eq('id', id).select();
+		return this.supabase.from('profiles').update(payload).eq('id', id).select();
 	}
 
 	getCategories = async () => {
