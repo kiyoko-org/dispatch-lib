@@ -47,3 +47,11 @@ export const reportSchema = z.object({
 })
 
 export type Report = z.infer<typeof reportSchema>;
+
+export const barangaySchema = z.object({
+	id: z.number().optional(),
+	name: z.string().min(1, "Name is required"),
+	created_at: z.string().optional(),
+})
+
+export type Barangay = z.infer<typeof barangaySchema>;

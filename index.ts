@@ -2,7 +2,7 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
-import { categorySchema, hotlineSchema, reportSchema } from "./types";
+import { barangaySchema, categorySchema, hotlineSchema, reportSchema } from "./types";
 
 interface SupabaseClientOptions {
 	url: string;
@@ -299,6 +299,27 @@ export class DispatchClient {
 	deleteOfficer = async (id: string) => {
 		return this.supabase.from('officers').delete().eq('id', id).select();
 	}
+
+	fetchBarangays = async () => {
+		return this.supabase.from('barangays').select('*');
+	}
+
+	addBarangay = async (payload: Database["public"]["Tables"]["barangays"]["Insert"]) => {
+		const validated = barangaySchema.parse(payload);
+		return this.supabase.from('barangays').insert(validated).select();
+	}
+
+	updateBarangay = async (
+		id: string,
+		payload: Partial<Database["public"]["Tables"]["barangays"]["Update"]>
+	) => {
+		const validated = barangaySchema.partial().parse(payload);
+		return this.supabase.from('barangays').update(validated).eq('id', id).select();
+	}
+
+	deleteBarangay = async (id: string) => {
+		return this.supabase.from('barangays').delete().eq('id', id).select();
+	}
 }
 
 /**
@@ -326,3 +347,4 @@ export * from "./react/hooks/useOfficers.ts";
 export * from "./react/hooks/useProfiles.ts";
 export * from "./react/hooks/useReports.ts";
 export * from "./react/hooks/useRealtimeReports.ts";
+export * from "./react/hooks/useBarangays.ts";
