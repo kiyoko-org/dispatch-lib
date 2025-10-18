@@ -297,7 +297,27 @@ export class DispatchClient {
 	}
 
 	deleteOfficer = async (id: string) => {
-		return this.supabase.from('officers').delete().eq('id', id).select();
+		const { data: deletedRows, error: deleteError } = await this.supabase
+			.from('officers')
+			.delete()
+			.eq('id', id)
+			.select();
+
+		if (deleteError) {
+			return { deleted: null, authDeleted: false, error: deleteError.message };
+		}
+
+		const { error: authError } = await this.supabase.auth.admin.deleteUser(id);
+
+		if (authError) {
+			return {
+				deleted: deletedRows,
+				authDeleted: false,
+				error: authError.message,
+			};
+		}
+
+		return { deleted: deletedRows, authDeleted: true, error: null };
 	}
 
 	fetchBarangays = async () => {

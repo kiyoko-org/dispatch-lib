@@ -347,6 +347,10 @@ export type Database = {
           reports_count: number
         }[]
       }
+      signout_user: {
+        Args: { user_uuid: string }
+        Returns: Json
+      }
     }
     Enums: {
       role: "admin" | "officer" | "user"
