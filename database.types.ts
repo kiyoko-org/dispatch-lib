@@ -124,6 +124,7 @@ export type Database = {
           assigned_report_id: number | null
           badge_number: string | null
           created_at: string | null
+          fcm_token: string | null
           first_name: string | null
           id: string
           last_name: string | null
@@ -136,6 +137,7 @@ export type Database = {
           assigned_report_id?: number | null
           badge_number?: string | null
           created_at?: string | null
+          fcm_token?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
@@ -148,6 +150,7 @@ export type Database = {
           assigned_report_id?: number | null
           badge_number?: string | null
           created_at?: string | null
+          fcm_token?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
@@ -173,6 +176,7 @@ export type Database = {
           id: string
           last_name: string | null
           middle_name: string | null
+          phone_number: string | null
           role: Database["public"]["Enums"]["role"]
           updated_at: string | null
           user_type: string | null
@@ -183,6 +187,7 @@ export type Database = {
           id: string
           last_name?: string | null
           middle_name?: string | null
+          phone_number?: string | null
           role?: Database["public"]["Enums"]["role"]
           updated_at?: string | null
           user_type?: string | null
@@ -193,6 +198,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           middle_name?: string | null
+          phone_number?: string | null
           role?: Database["public"]["Enums"]["role"]
           updated_at?: string | null
           user_type?: string | null
