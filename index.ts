@@ -2,7 +2,7 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
-import { barangaySchema, categorySchema, hotlineSchema, reportSchema } from "./types";
+import { barangaySchema, categorySchema, hotlineSchema, reportSchema, lostAndFoundSchema } from "./types";
 
 interface SupabaseClientOptions {
 	url: string;
@@ -347,8 +347,29 @@ export class DispatchClient {
 			title,
 			body
 		};
-		
+
 		return this.supabase.from('notifications').insert(notification).select();
+	}
+
+	fetchLostAndFound = async () => {
+		return this.supabase.from('lost_and_found').select('*');
+	}
+
+	addLostAndFound = async (payload: Database["public"]["Tables"]["lost_and_found"]["Insert"]) => {
+		const validated = lostAndFoundSchema.parse(payload);
+		return this.supabase.from('lost_and_found').insert(validated).select();
+	}
+
+	updateLostAndFound = async (
+		id: number,
+		payload: Partial<Database["public"]["Tables"]["lost_and_found"]["Update"]>
+	) => {
+		const validated = lostAndFoundSchema.partial().parse(payload);
+		return this.supabase.from('lost_and_found').update(validated).eq('id', id).select();
+	}
+
+	deleteLostAndFound = async (id: number) => {
+		return this.supabase.from('lost_and_found').delete().eq('id', id).select();
 	}
 }
 
@@ -378,3 +399,4 @@ export * from "./react/hooks/useProfiles.ts";
 export * from "./react/hooks/useReports.ts";
 export * from "./react/hooks/useRealtimeReports.ts";
 export * from "./react/hooks/useBarangays.ts";
+export * from "./react/hooks/useLostAndFound.ts";

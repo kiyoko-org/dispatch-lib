@@ -119,6 +119,42 @@ export type Database = {
         }
         Relationships: []
       }
+      lost_and_found: {
+        Row: {
+          category: string
+          created_at: string
+          date_lost: string
+          description: string | null
+          id: number
+          item_title: string
+          lat: number
+          lon: number
+          photo: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          date_lost: string
+          description?: string | null
+          id?: number
+          item_title: string
+          lat: number
+          lon: number
+          photo?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date_lost?: string
+          description?: string | null
+          id?: number
+          item_title?: string
+          lat?: number
+          lon?: number
+          photo?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string

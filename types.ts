@@ -55,3 +55,17 @@ export const barangaySchema = z.object({
 })
 
 export type Barangay = z.infer<typeof barangaySchema>;
+
+export const lostAndFoundSchema = z.object({
+	id: z.number().optional(),
+	item_title: z.string().min(1, "Item title is required"),
+	description: z.string().nullable().optional(),
+	category: z.string().min(1, "Category is required"),
+	date_lost: z.string().min(1, "Date lost is required"),
+	lat: z.number(),
+	lon: z.number(),
+	photo: z.string().nullable().optional(),
+	created_at: z.string().optional(),
+})
+
+export type LostAndFound = z.infer<typeof lostAndFoundSchema>;
