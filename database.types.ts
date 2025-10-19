@@ -126,6 +126,7 @@ export type Database = {
           date_lost: string
           description: string | null
           id: number
+          is_lost: boolean | null
           item_title: string
           lat: number
           lon: number
@@ -137,6 +138,7 @@ export type Database = {
           date_lost: string
           description?: string | null
           id?: number
+          is_lost?: boolean | null
           item_title: string
           lat: number
           lon: number
@@ -148,6 +150,7 @@ export type Database = {
           date_lost?: string
           description?: string | null
           id?: number
+          is_lost?: boolean | null
           item_title?: string
           lat?: number
           lon?: number
@@ -419,6 +422,8 @@ export type Database = {
       }
     }
     Enums: {
+      laf: "lost" | "found"
+      lost_and_found_type: "lost" | "found"
       role: "admin" | "officer" | "user"
     }
     CompositeTypes: {
@@ -547,6 +552,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      laf: ["lost", "found"],
+      lost_and_found_type: ["lost", "found"],
       role: ["admin", "officer", "user"],
     },
   },
