@@ -340,6 +340,16 @@ export class DispatchClient {
 	deleteBarangay = async (id: string) => {
 		return this.supabase.from('barangays').delete().eq('id', id).select();
 	}
+
+	notifyUser = async (userId: string, title: string | null, body: string) => {
+		const notification = {
+			user_id: userId,
+			title,
+			body
+		};
+		
+		return this.supabase.from('notifications').insert(notification).select();
+	}
 }
 
 /**
