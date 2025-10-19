@@ -131,6 +131,7 @@ export type Database = {
           lat: number
           lon: number
           photo: string | null
+          user_id: string | null
         }
         Insert: {
           category: string
@@ -143,6 +144,7 @@ export type Database = {
           lat: number
           lon: number
           photo?: string | null
+          user_id?: string | null
         }
         Update: {
           category?: string
@@ -155,6 +157,7 @@ export type Database = {
           lat?: number
           lon?: number
           photo?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
