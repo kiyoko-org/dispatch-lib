@@ -400,3 +400,4 @@ export * from "./react/hooks/useReports.ts";
 export * from "./react/hooks/useRealtimeReports.ts";
 export * from "./react/hooks/useBarangays.ts";
 export * from "./react/hooks/useLostAndFound.ts";
+export * from "./react/hooks/useNotifications.ts";
