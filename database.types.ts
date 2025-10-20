@@ -238,8 +238,10 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          fcm_token: string | null
           first_name: string | null
           id: string
+          id_card_number: string | null
           last_name: string | null
           middle_name: string | null
           phone_number: string | null
@@ -249,8 +251,10 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          fcm_token?: string | null
           first_name?: string | null
           id: string
+          id_card_number?: string | null
           last_name?: string | null
           middle_name?: string | null
           phone_number?: string | null
@@ -260,8 +264,10 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          fcm_token?: string | null
           first_name?: string | null
           id?: string
+          id_card_number?: string | null
           last_name?: string | null
           middle_name?: string | null
           phone_number?: string | null
