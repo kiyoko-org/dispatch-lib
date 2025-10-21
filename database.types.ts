@@ -238,40 +238,61 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          birth_city: string | null
+          birth_date: string | null
+          birth_province: string | null
           fcm_token: string | null
           first_name: string | null
           id: string
           id_card_number: string | null
           last_name: string | null
           middle_name: string | null
+          permanent_address_1: string | null
+          permanent_address_2: string | null
           phone_number: string | null
           role: Database["public"]["Enums"]["role"]
+          sex: string | null
+          suffix: string | null
           updated_at: string | null
           user_type: string | null
         }
         Insert: {
           avatar_url?: string | null
+          birth_city?: string | null
+          birth_date?: string | null
+          birth_province?: string | null
           fcm_token?: string | null
           first_name?: string | null
           id: string
           id_card_number?: string | null
           last_name?: string | null
           middle_name?: string | null
+          permanent_address_1?: string | null
+          permanent_address_2?: string | null
           phone_number?: string | null
           role?: Database["public"]["Enums"]["role"]
+          sex?: string | null
+          suffix?: string | null
           updated_at?: string | null
           user_type?: string | null
         }
         Update: {
           avatar_url?: string | null
+          birth_city?: string | null
+          birth_date?: string | null
+          birth_province?: string | null
           fcm_token?: string | null
           first_name?: string | null
           id?: string
           id_card_number?: string | null
           last_name?: string | null
           middle_name?: string | null
+          permanent_address_1?: string | null
+          permanent_address_2?: string | null
           phone_number?: string | null
           role?: Database["public"]["Enums"]["role"]
+          sex?: string | null
+          suffix?: string | null
           updated_at?: string | null
           user_type?: string | null
         }
