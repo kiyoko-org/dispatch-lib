@@ -165,6 +165,7 @@ export type Database = {
         Row: {
           body: string
           created_at: string
+          data: Json | null
           id: string
           title: string | null
           user_id: string
@@ -172,6 +173,7 @@ export type Database = {
         Insert: {
           body: string
           created_at?: string
+          data?: Json | null
           id?: string
           title?: string | null
           user_id: string
@@ -179,6 +181,7 @@ export type Database = {
         Update: {
           body?: string
           created_at?: string
+          data?: Json | null
           id?: string
           title?: string | null
           user_id?: string
@@ -432,7 +435,7 @@ export type Database = {
         }[]
       }
       get_profiles_with_emails: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           avatar_url: string
           badge_number: string
@@ -446,10 +449,11 @@ export type Database = {
           reports_count: number
         }[]
       }
-      signout_user: {
-        Args: { user_uuid: string }
+      sign_out_with_id: {
+        Args: { id_card_number_input: string }
         Returns: Json
       }
+      signout_user: { Args: { user_uuid: string }; Returns: Json }
     }
     Enums: {
       laf: "lost" | "found"
