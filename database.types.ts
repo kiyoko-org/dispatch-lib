@@ -339,6 +339,7 @@ export type Database = {
           nearby_landmark: string | null
           number_of_witnesses: string | null
           officers_involved: string[] | null
+          police_notes: string | null
           property_damage: string | null
           reporter_id: string
           resolved_at: string | null
@@ -366,6 +367,7 @@ export type Database = {
           nearby_landmark?: string | null
           number_of_witnesses?: string | null
           officers_involved?: string[] | null
+          police_notes?: string | null
           property_damage?: string | null
           reporter_id?: string
           resolved_at?: string | null
@@ -393,6 +395,7 @@ export type Database = {
           nearby_landmark?: string | null
           number_of_witnesses?: string | null
           officers_involved?: string[] | null
+          police_notes?: string | null
           property_damage?: string | null
           reporter_id?: string
           resolved_at?: string | null
