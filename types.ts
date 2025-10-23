@@ -41,6 +41,7 @@ export const reportSchema = z.object({
 	witness_contact_info: z.string().nullable().optional(),
 	attachments: z.array(z.string()).nullable().optional(),
 	status: z.string().optional().default("pending"),
+	police_notes: z.string().nullable().optional(),
 	is_archived: z.boolean().nullable().optional().default(false),
 	resolved_at: z.string().nullable().optional(),
 	created_at: z.string().optional(),
