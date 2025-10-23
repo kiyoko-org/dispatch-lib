@@ -167,6 +167,7 @@ export type Database = {
           created_at: string
           data: Json | null
           id: string
+          is_read: boolean | null
           title: string | null
           user_id: string
         }
@@ -175,6 +176,7 @@ export type Database = {
           created_at?: string
           data?: Json | null
           id?: string
+          is_read?: boolean | null
           title?: string | null
           user_id: string
         }
@@ -183,6 +185,7 @@ export type Database = {
           created_at?: string
           data?: Json | null
           id?: string
+          is_read?: boolean | null
           title?: string | null
           user_id?: string
         }
