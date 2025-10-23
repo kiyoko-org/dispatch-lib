@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          admin_id: string
+          admin_settings: Json | null
+          id: number
+        }
+        Insert: {
+          admin_id: string
+          admin_settings?: Json | null
+          id?: number
+        }
+        Update: {
+          admin_id?: string
+          admin_settings?: Json | null
+          id?: number
+        }
+        Relationships: []
+      }
       barangays: {
         Row: {
           created_at: string

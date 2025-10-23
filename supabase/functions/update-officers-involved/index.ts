@@ -64,10 +64,13 @@ Deno.serve(async (req) => {
     )
   }
 
-  const { error: updateError } = await supabase
-    .from('reports')
-    .update({ officers_involved: officerIds })
-    .eq('id', payload.record.id)
+   const { error: updateError } = await supabase
+     .from('reports')
+     .update({ 
+       officers_involved: officerIds,
+       resolved_at: new Date().toISOString()
+     })
+     .eq('id', payload.record.id)
 
   if (updateError) {
     console.error('Error updating officers_involved:', updateError)
