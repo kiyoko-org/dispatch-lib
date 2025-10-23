@@ -10,6 +10,7 @@ type UseOfficersReturn = {
 	error: Error | null
 	updateOfficer: (id: string, payload: Partial<Database["public"]["Tables"]["officers"]["Update"]>) => Promise<{ data: any[] | null; error: any }>
 	deleteOfficer: (id: string) => Promise<{ data: any[] | null; error: any }>
+	getResolvedReports: (officerId: string) => Promise<{ data: Database["public"]["Functions"]["get_resolved_reports"]["Returns"] | null; error: any }>
 }
 
 export const useOfficers = (): UseOfficersReturn => {
@@ -91,15 +92,23 @@ export const useOfficers = (): UseOfficersReturn => {
 	}
 
 	async function deleteOfficer(id: string) {
-		const { data, error } = await client.deleteOfficer(id);
-		if (error) {
-			console.error("Error deleting officer:", error);
+		const result = await client.deleteOfficer(id);
+		if (result.error) {
+			console.error("Error deleting officer:", result.error);
 		}
-		if (!error) {
+		if (!result.error) {
 			setOfficers(prev => prev.filter(officer => officer.id !== id));
+		}
+		return { data: result.deleted, error: result.error };
+	}
+
+	async function getResolvedReports(officerId: string) {
+		const { data, error } = await client.getResolvedReports(officerId);
+		if (error) {
+			console.error("Error fetching resolved reports:", error);
 		}
 		return { data, error };
 	}
 
-	return { officers, loading, error, updateOfficer, deleteOfficer }
+	return { officers, loading, error, updateOfficer, deleteOfficer, getResolvedReports }
 }

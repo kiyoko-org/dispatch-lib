@@ -371,6 +371,10 @@ export class DispatchClient {
 	deleteLostAndFound = async (id: number) => {
 		return this.supabase.from('lost_and_found').delete().eq('id', id).select();
 	}
+
+	getResolvedReports = async (officerId: string) => {
+		return this.supabase.rpc('get_resolved_reports', { officer_id_param: officerId });
+	}
 }
 
 /**

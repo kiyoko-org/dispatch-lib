@@ -452,6 +452,22 @@ export type Database = {
           reports_count: number
         }[]
       }
+      get_resolved_reports: {
+        Args: { officer_id_param: string }
+        Returns: {
+          category_id: number
+          created_at: string
+          id: number
+          incident_title: string
+          latitude: number
+          longitude: number
+          officers_involved: string[]
+          reporter_id: string
+          resolved_at: string
+          status: string
+          what_happened: string
+        }[]
+      }
       sign_out_with_id: {
         Args: { id_card_number_input: string }
         Returns: Json
