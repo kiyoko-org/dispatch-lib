@@ -375,6 +375,10 @@ export class DispatchClient {
 	getResolvedReports = async (officerId: string) => {
 		return this.supabase.rpc('get_resolved_reports', { officer_id_param: officerId });
 	}
+
+	idExists = async (idCardNumber: string) => {
+		return this.supabase.rpc('id_exists', { id_card_number_param: idCardNumber });
+	}
 }
 
 /**

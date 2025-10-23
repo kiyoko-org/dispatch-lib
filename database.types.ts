@@ -489,6 +489,12 @@ export type Database = {
           what_happened: string
         }[]
       }
+      id_exists: {
+        Args: { id_card_number_param: string }
+        Returns: {
+          exists: boolean
+        }[]
+      }
       sign_out_with_id: {
         Args: { id_card_number_input: string }
         Returns: Json
