@@ -51,6 +51,19 @@ Deno.serve(async (req) => {
 
   const officerIds = officers.map(officer => officer.id)
 
+  const { error: updateOfficersError } = await supabase
+    .from('officers')
+    .update({ assigned_report_id: null })
+    .in('id', officerIds)
+
+  if (updateOfficersError) {
+    console.error('Error clearing assigned_report_id for officers:', updateOfficersError)
+    return new Response(
+      JSON.stringify({ error: 'Failed to clear assigned_report_id for officers' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    )
+  }
+
   const { error: updateError } = await supabase
     .from('reports')
     .update({ officers_involved: officerIds })
@@ -66,7 +79,7 @@ Deno.serve(async (req) => {
 
   return new Response(
     JSON.stringify({ 
-      message: 'Successfully updated officers_involved',
+      message: 'Successfully updated officers_involved and cleared assigned_report_id',
       officer_ids: officerIds 
     }),
     { headers: { 'Content-Type': 'application/json' } }
