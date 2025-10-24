@@ -423,8 +423,26 @@ export class DispatchClient {
 		return this.supabase.rpc('get_resolved_reports', { officer_id_param: officerId });
 	}
 
-	idExists = async (idCardNumber: string) => {
-		return this.supabase.rpc('id_exists', { id_card_number_param: idCardNumber });
+	idExists = async (idCardNumber: string): Promise<{ exists: boolean; error: string | null }> => {
+		const { data, error } = await this.supabase.rpc('id_exists', { id_card_number_param: idCardNumber });
+
+		if (error) {
+			return { exists: false, error: error.message };
+		}
+
+		const exists = data?.[0]?.exists ?? false;
+		return { exists, error: null };
+	}
+
+	emailExists = async (email: string): Promise<{ exists: boolean; error: string | null }> => {
+		const { data, error } = await this.supabase.rpc('email_exists', { email_param: email });
+
+		if (error) {
+			return { exists: false, error: error.message };
+		}
+
+		const exists = data?.[0]?.exists ?? false;
+		return { exists, error: null };
 	}
 }
 
@@ -441,6 +459,16 @@ export function initDispatchClient(options: DispatchClientOptions) {
 
 export function getDispatchClient() {
 	return DispatchClient.getInstance();
+}
+
+export async function isEmailRegistered(email: string) {
+	const { exists, error } = await DispatchClient.getInstance().emailExists(email);
+
+	if (error) {
+		throw new Error(error);
+	}
+
+	return exists;
 }
 
 export * from "./id.ts";

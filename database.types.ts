@@ -455,6 +455,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      email_exists: {
+        Args: { email_param: string }
+        Returns: {
+          exists: boolean
+        }[]
+      }
       get_officer_email_by_badge: {
         Args: { badge_number_param: string }
         Returns: {
