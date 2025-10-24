@@ -325,6 +325,7 @@ export type Database = {
       reports: {
         Row: {
           archived_date: string | null
+          arrived_at: string | null
           attachments: string[] | null
           category_id: number | null
           created_at: string
@@ -353,6 +354,7 @@ export type Database = {
         }
         Insert: {
           archived_date?: string | null
+          arrived_at?: string | null
           attachments?: string[] | null
           category_id?: number | null
           created_at?: string
@@ -381,6 +383,7 @@ export type Database = {
         }
         Update: {
           archived_date?: string | null
+          arrived_at?: string | null
           attachments?: string[] | null
           category_id?: number | null
           created_at?: string
