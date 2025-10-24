@@ -275,6 +275,38 @@ export class DispatchClient {
 		return this.supabase.from('reports').update({ is_archived: true, archived_date: new Date().toISOString() }).eq('id', report_id).select();
 	}
 
+	officerArrived = async (reportId: number): Promise<{
+		data: Database["public"]["Tables"]["reports"]["Row"] | null;
+		error: string | null;
+	}> => {
+		const { data: report, error: fetchError } = await this.supabase
+			.from('reports')
+			.select('arrived_at')
+			.eq('id', reportId)
+			.single();
+
+		if (fetchError) {
+			return { data: null, error: fetchError.message };
+		}
+
+		if (report?.arrived_at) {
+			return { data: null, error: "Arrival time already recorded for this report" };
+		}
+
+		const { data, error } = await this.supabase
+			.from('reports')
+			.update({ arrived_at: new Date().toISOString() })
+			.eq('id', reportId)
+			.select()
+			.single();
+
+		if (error) {
+			return { data: null, error: error.message };
+		}
+
+		return { data, error: null };
+	}
+
 	fetchReports = async () => {
 		return this.supabase.from('reports').select('*');
 	}
