@@ -223,6 +223,21 @@ export class DispatchClient {
 		return this.supabase.from('officers').select('*');
 	}
 
+	fetchEmergencyCalls = async () => {
+		return this.supabase.from('emergency_calls').select('*');
+	}
+
+	updateEmergencyCall = async (
+		id: string,
+		payload: Partial<Database["public"]["Tables"]["emergency_calls"]["Update"]>
+	) => {
+		return this.supabase.from('emergency_calls').update(payload).eq('id', id).select();
+	}
+
+	deleteEmergencyCall = async (id: string) => {
+		return this.supabase.from('emergency_calls').delete().eq('id', id).select();
+	}
+
 	addCategory = async (payload: Partial<Database["public"]["Tables"]["categories"]["Update"]>) => {
 		const validated = categorySchema.parse(payload);
 		return this.supabase.from('categories').insert(validated).select();
@@ -409,3 +424,4 @@ export * from "./react/hooks/useRealtimeReports.ts";
 export * from "./react/hooks/useBarangays.ts";
 export * from "./react/hooks/useLostAndFound.ts";
 export * from "./react/hooks/useNotifications.ts";
+export * from "./react/hooks/useEmergencies.ts";
