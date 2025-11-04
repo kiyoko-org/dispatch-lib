@@ -70,3 +70,10 @@ export const lostAndFoundSchema = z.object({
 })
 
 export type LostAndFound = z.infer<typeof lostAndFoundSchema>;
+
+export const witnessSchema = z.object({
+	user_id: z.string().min(1, "user_id is required"),
+	statement: z.string().nullable().optional(),
+});
+
+export type Witness = z.infer<typeof witnessSchema>;

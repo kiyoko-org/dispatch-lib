@@ -332,6 +332,15 @@ export class DispatchClient {
 		return this.supabase.from('reports').select('*').eq('id', id).single();
 	}
 
+	addWitnessToReport = async (
+		reportId: number,
+		userId: string,
+		statement?: string | null
+	) => {
+		const newWitness = { user_id: userId, statement: statement ?? null };
+		return this.supabase.rpc('append_witness', { report_id: reportId, new_witness: newWitness });
+	}
+
 	assignToReport = async (officerId: string, reportId: number) => {
 		return this.supabase.from('officers').update({ assigned_report_id: reportId }).eq('id', officerId).select();
 	}
