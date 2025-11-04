@@ -351,6 +351,7 @@ export type Database = {
           what_happened: string | null
           who_was_involved: string | null
           witness_contact_info: string | null
+          witnesses: Json[] | null
         }
         Insert: {
           archived_date?: string | null
@@ -380,6 +381,7 @@ export type Database = {
           what_happened?: string | null
           who_was_involved?: string | null
           witness_contact_info?: string | null
+          witnesses?: Json[] | null
         }
         Update: {
           archived_date?: string | null
@@ -409,6 +411,7 @@ export type Database = {
           what_happened?: string | null
           who_was_involved?: string | null
           witness_contact_info?: string | null
+          witnesses?: Json[] | null
         }
         Relationships: [
           {
