@@ -45,6 +45,7 @@ export const reportSchema = z.object({
 	is_archived: z.boolean().nullable().optional().default(false),
 	resolved_at: z.string().nullable().optional(),
 	created_at: z.string().optional(),
+	false_report: z.boolean().default(false),
 })
 
 export type Report = z.infer<typeof reportSchema>;

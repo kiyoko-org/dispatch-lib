@@ -329,6 +329,7 @@ export type Database = {
           attachments: string[] | null
           category_id: number | null
           created_at: string
+          false_report: boolean
           id: number
           incident_date: string | null
           incident_time: string | null
@@ -359,6 +360,7 @@ export type Database = {
           attachments?: string[] | null
           category_id?: number | null
           created_at?: string
+          false_report?: boolean
           id?: number
           incident_date?: string | null
           incident_time?: string | null
@@ -389,6 +391,7 @@ export type Database = {
           attachments?: string[] | null
           category_id?: number | null
           created_at?: string
+          false_report?: boolean
           id?: number
           incident_date?: string | null
           incident_time?: string | null
@@ -458,6 +461,46 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      append_witness: {
+        Args: { new_witness: Json; report_id: number }
+        Returns: {
+          archived_date: string | null
+          arrived_at: string | null
+          attachments: string[] | null
+          category_id: number | null
+          created_at: string
+          false_report: boolean
+          id: number
+          incident_date: string | null
+          incident_time: string | null
+          incident_title: string | null
+          injuries_reported: string | null
+          is_archived: boolean | null
+          latitude: number
+          longitude: number
+          nearby_landmark: string | null
+          number_of_witnesses: string | null
+          officers_involved: string[] | null
+          police_notes: string | null
+          property_damage: string | null
+          reporter_id: string
+          resolved_at: string | null
+          status: string
+          street_address: string | null
+          sub_category: number | null
+          suspect_description: string | null
+          what_happened: string | null
+          who_was_involved: string | null
+          witness_contact_info: string | null
+          witnesses: Json[] | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "reports"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       email_exists: {
         Args: { email_param: string }
         Returns: {
