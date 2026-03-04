@@ -24,7 +24,7 @@ const client = initDispatchClient({
 
 async function testIdExists() {
 	console.log(`\nChecking registered ID card: ${existingIdCard}`)
-	const existingResult = await client.idExists(existingIdCard)
+	const existingResult = await client.idExists(existingIdCard!)
 	console.log("Result:", existingResult)
 
 	if (existingResult.error) {

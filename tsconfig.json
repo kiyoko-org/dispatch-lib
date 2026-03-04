@@ -1,4 +1,5 @@
 {
+  "exclude": ["supabase/functions"],
   "compilerOptions": {
     // Environment setup & latest features
     "lib": ["ESNext"],

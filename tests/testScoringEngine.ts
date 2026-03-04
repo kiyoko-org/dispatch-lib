@@ -61,7 +61,7 @@ async function testScoringEngine() {
 		// 25 (base) + 3 resolved * 10 pts = 55 points
 		console.log("\nStep 2: Resolving 3 reports to hit Level 2 (55 pts)...")
 		for (let i = 0; i < 3; i++) {
-			await client.updateReport(reportIds[i], { status: "resolved" })
+			await client.updateReport(reportIds[i]!, { status: "resolved" })
 		}
 		await new Promise(r => setTimeout(r, 1500))
 		await verifyScore("Reach Level 2", 2)
@@ -70,7 +70,7 @@ async function testScoringEngine() {
 		// 25 (base) + 5 resolved * 10 pts = 75 points
 		console.log("\nStep 3: Resolving 2 more reports to hit Level 3 (75 pts)...")
 		for (let i = 3; i < 5; i++) {
-			await client.updateReport(reportIds[i], { status: "resolved" })
+			await client.updateReport(reportIds[i]!, { status: "resolved" })
 		}
 		await new Promise(r => setTimeout(r, 1500))
 		await verifyScore("Reach Level 3", 3)
@@ -78,7 +78,7 @@ async function testScoringEngine() {
 		// 4. Penalty Check: False Report (-20 Points)
 		// 75 - 20 = 55 (Should drop back to Level 2)
 		console.log("\nStep 4: Marking 1 report as FALSE (-20 pts penalty)...")
-		await client.updateReport(reportIds[0], { false_report: true })
+		await client.updateReport(reportIds[0]!, { false_report: true })
 		await new Promise(r => setTimeout(r, 1500))
 		await verifyScore("Drop to Level 2 via Penalty", 2)
 

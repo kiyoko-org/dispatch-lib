@@ -532,6 +532,9 @@ export type Database = {
           last_sign_in_at: string
           middle_name: string
           reports_count: number
+          role: string
+          trust_score: number
+          trust_factors: Json
         }[]
       }
       get_resolved_reports: {

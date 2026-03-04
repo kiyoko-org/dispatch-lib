@@ -5,7 +5,7 @@ import { getDispatchClient } from "../..";
 type Profile = Database["public"]["Tables"]["profiles"]["Row"] & {
 	email?: string;
 	reports_count?: number;
-	created_at?: string;
+	joined_date?: string;
 	last_sign_in_at?: string;
 };
 
@@ -31,44 +31,20 @@ export function useTrustScores(): UseTrustScoresReturn {
 	const fetchUsers = useCallback(async () => {
 		try {
 			setLoading(true);
-			// Reuse the existing fetchProfiles logic but flattened here for context
-			const { data: profiles, error: fetchError } = await client.supabaseClient
-				.from("profiles")
-				.select("*");
+			setError(null);
+			
+			// Use the unified DispatchClient method which handles proxy routing automatically
+			const { data, error: fetchError } = await client.fetchProfilesWithEmails();
 
-			if (fetchError) throw fetchError;
-
-			if (!profiles) {
-				setUsers([]);
-				return;
+			if (fetchError) {
+				const msg = (fetchError as any).message || "Unknown error fetching profiles";
+				throw new Error(msg);
 			}
 
-			// In a real production app, you might want to move this merging to an RPC
-			// to avoid N+1 queries from the client.
-			const userIds = profiles.map((p) => p.id);
-			
-			// Get auth data and report counts
-			const [authData, reportsData] = await Promise.all([
-				Promise.all(userIds.map(id => client.supabaseClient.auth.admin.getUserById(id))),
-				Promise.all(userIds.map(id => 
-					client.supabaseClient
-						.from('reports')
-						.select('id', { count: 'exact', head: true })
-						.eq('reporter_id', id)
-				))
-			]);
-
-			const merged = profiles.map((profile, i) => ({
-				...profile,
-				email: authData[i]?.data.user?.email,
-				created_at: authData[i]?.data.user?.created_at,
-				last_sign_in_at: authData[i]?.data.user?.last_sign_in_at,
-				reports_count: reportsData[i]?.count || 0,
-			}));
-
-			setUsers(merged);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to fetch trust scores");
+			setUsers(data as any || []);
+		} catch (err: any) {
+			console.error("useTrustScores fetch error:", err);
+			setError(err.message || "Failed to fetch trust scores");
 		} finally {
 			setLoading(false);
 		}
@@ -76,14 +52,19 @@ export function useTrustScores(): UseTrustScoresReturn {
 
 	const updateScore = async (userId: string, score: number) => {
 		try {
+			// Use the unified DispatchClient method which handles proxy routing automatically
 			const { error: updateError } = await client.updateTrustScore(userId, score);
-			if (updateError) throw updateError;
+			
+			if (updateError) {
+				const msg = (updateError as any).message || "Failed to update score";
+				throw new Error(msg);
+			}
 			
 			// Optimistic update
 			setUsers((current) =>
 				current.map((u) => (u.id === userId ? { ...u, trust_score: score } : u))
 			);
-		} catch (err) {
+		} catch (err: any) {
 			console.error("Failed to update trust score:", err);
 			throw err;
 		}
