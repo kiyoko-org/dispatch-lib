@@ -2,7 +2,16 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
-import { barangaySchema, categorySchema, hotlineSchema, reportSchema, lostAndFoundSchema, trustFactorsSchema } from "./types";
+import { 
+	barangaySchema, 
+	categorySchema, 
+	hotlineSchema, 
+	reportSchema, 
+	lostAndFoundSchema, 
+	trustFactorsSchema,
+	type TrustFactors,
+	type Profile
+} from "./types";
 
 interface SupabaseClientOptions {
 	url: string;
@@ -258,7 +267,7 @@ export class DispatchClient {
 		return this.updateTrustScore(userId, currentScore - 1);
 	}
 
-	updateTrustFactors = async (userId: string, factors: Partial<Database["public"]["Tables"]["profiles"]["Row"]["trust_factors"]>) => {
+	updateTrustFactors = async (userId: string, factors: Partial<TrustFactors>) => {
 		const { data: profile } = await this.supabase
 			.from('profiles')
 			.select('trust_factors')
@@ -266,7 +275,7 @@ export class DispatchClient {
 			.single();
 
 		const currentFactors = (profile?.trust_factors as any) || {};
-		const mergedFactors = { ...currentFactors, ...factors };
+		const mergedFactors = { ...currentFactors, ...(factors as any) };
 		const validated = trustFactorsSchema.parse(mergedFactors);
 
 		return this.supabase

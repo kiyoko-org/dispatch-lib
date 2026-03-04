@@ -134,9 +134,11 @@ export function useRealtimeReports(options: UseRealtimeReportsOptions = {}): Use
 								
 							case 'DELETE':
 								const deletedId = payload.old.id;
-								globalReports = globalReports.filter(report => report.id !== deletedId);
-								notifyListeners({ reports: globalReports });
-								globalListeners.forEach(listener => listener.onDelete?.(deletedId));
+								if (deletedId !== undefined) {
+									globalReports = globalReports.filter(report => report.id !== deletedId);
+									notifyListeners({ reports: globalReports });
+									globalListeners.forEach(listener => listener.onDelete?.(deletedId));
+								}
 								break;
 						}
 					}

@@ -5,6 +5,8 @@ import { getDispatchClient } from "../..";
 type Profile = Database["public"]["Tables"]["profiles"]["Row"] & {
 	email?: string;
 	reports_count?: number;
+	created_at?: string;
+	last_sign_in_at?: string;
 };
 
 type UseTrustScoresReturn = {
@@ -45,18 +47,22 @@ export function useTrustScores(): UseTrustScoresReturn {
 			// to avoid N+1 queries from the client.
 			const userIds = profiles.map((p) => p.id);
 			
-			// Get report counts
-			const reportsData = await Promise.all(
-				userIds.map((id) =>
+			// Get auth data and report counts
+			const [authData, reportsData] = await Promise.all([
+				Promise.all(userIds.map(id => client.supabaseClient.auth.admin.getUserById(id))),
+				Promise.all(userIds.map(id => 
 					client.supabaseClient
-						.from("reports")
-						.select("id", { count: "exact", head: true })
-						.eq("reporter_id", id)
-				)
-			);
+						.from('reports')
+						.select('id', { count: 'exact', head: true })
+						.eq('reporter_id', id)
+				))
+			]);
 
 			const merged = profiles.map((profile, i) => ({
 				...profile,
+				email: authData[i]?.data.user?.email,
+				created_at: authData[i]?.data.user?.created_at,
+				last_sign_in_at: authData[i]?.data.user?.last_sign_in_at,
 				reports_count: reportsData[i]?.count || 0,
 			}));
 
