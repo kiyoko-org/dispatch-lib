@@ -2,7 +2,7 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
-import { barangaySchema, categorySchema, hotlineSchema, reportSchema, lostAndFoundSchema } from "./types";
+import { barangaySchema, categorySchema, hotlineSchema, reportSchema, lostAndFoundSchema, trustFactorsSchema } from "./types";
 
 interface SupabaseClientOptions {
 	url: string;
@@ -213,6 +213,70 @@ export class DispatchClient {
 		payload: Partial<Database["public"]["Tables"]["profiles"]["Update"]>
 	) => {
 		return this.supabase.from('profiles').update(payload).eq('id', id).select();
+	}
+
+	updateTrustScore = async (userId: string, score: number) => {
+		// Ensure score is within 0-3
+		const validatedScore = Math.max(0, Math.min(3, score));
+		return this.supabase
+			.from('profiles')
+			.update({
+				trust_score: validatedScore,
+				updated_at: new Date().toISOString()
+			})
+			.eq('id', userId)
+			.select();
+	}
+
+	incrementTrustScore = async (userId: string) => {
+		const { data: profile } = await this.supabase
+			.from('profiles')
+			.select('trust_score')
+			.eq('id', userId)
+			.single();
+
+		if (!profile) return { error: "Profile not found" };
+
+		const currentScore = profile.trust_score ?? 3;
+		if (currentScore >= 3) return { data: profile, error: null };
+
+		return this.updateTrustScore(userId, currentScore + 1);
+	}
+
+	decrementTrustScore = async (userId: string) => {
+		const { data: profile } = await this.supabase
+			.from('profiles')
+			.select('trust_score')
+			.eq('id', userId)
+			.single();
+
+		if (!profile) return { error: "Profile not found" };
+
+		const currentScore = profile.trust_score ?? 3;
+		if (currentScore <= 0) return { data: profile, error: null };
+
+		return this.updateTrustScore(userId, currentScore - 1);
+	}
+
+	updateTrustFactors = async (userId: string, factors: Partial<Database["public"]["Tables"]["profiles"]["Row"]["trust_factors"]>) => {
+		const { data: profile } = await this.supabase
+			.from('profiles')
+			.select('trust_factors')
+			.eq('id', userId)
+			.single();
+
+		const currentFactors = (profile?.trust_factors as any) || {};
+		const mergedFactors = { ...currentFactors, ...factors };
+		const validated = trustFactorsSchema.parse(mergedFactors);
+
+		return this.supabase
+			.from('profiles')
+			.update({
+				trust_factors: validated,
+				updated_at: new Date().toISOString()
+			})
+			.eq('id', userId)
+			.select();
 	}
 
 	getCategories = async () => {
@@ -488,6 +552,8 @@ export * from "./react/hooks/useHotlines.ts";
 export * from "./react/hooks/useCategories.ts";
 export * from "./react/hooks/useOfficers.ts";
 export * from "./react/hooks/useProfiles.ts";
+export * from "./react/hooks/useProfile.ts";
+export * from "./react/hooks/useTrustScores.ts";
 export * from "./react/hooks/useReports.ts";
 export * from "./react/hooks/useRealtimeReports.ts";
 export * from "./react/hooks/useBarangays.ts";

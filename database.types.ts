@@ -277,6 +277,8 @@ export type Database = {
           role: Database["public"]["Enums"]["role"]
           sex: string | null
           suffix: string | null
+          trust_factors: Json | null
+          trust_score: number | null
           updated_at: string | null
           user_type: string | null
         }
@@ -297,6 +299,8 @@ export type Database = {
           role?: Database["public"]["Enums"]["role"]
           sex?: string | null
           suffix?: string | null
+          trust_factors?: Json | null
+          trust_score?: number | null
           updated_at?: string | null
           user_type?: string | null
         }
@@ -317,6 +321,8 @@ export type Database = {
           role?: Database["public"]["Enums"]["role"]
           sex?: string | null
           suffix?: string | null
+          trust_factors?: Json | null
+          trust_score?: number | null
           updated_at?: string | null
           user_type?: string | null
         }

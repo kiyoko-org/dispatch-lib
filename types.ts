@@ -77,3 +77,28 @@ export const witnessSchema = z.object({
 });
 
 export type Witness = z.infer<typeof witnessSchema>;
+
+export const trustFactorsSchema = z.object({
+	total_reports: z.number().default(0),
+	verified_reports: z.number().default(0),
+	false_reports: z.number().default(0),
+	cancelled_reports: z.number().default(0),
+	avg_response_time_minutes: z.number().nullable().default(null),
+}).catchall(z.any());
+
+export type TrustFactors = z.infer<typeof trustFactorsSchema>;
+
+export const profileSchema = z.object({
+	id: z.string(),
+	first_name: z.string().nullable().optional(),
+	middle_name: z.string().nullable().optional(),
+	last_name: z.string().nullable().optional(),
+	avatar_url: z.string().nullable().optional(),
+	phone_number: z.string().nullable().optional(),
+	role: z.enum(["admin", "officer", "user"]).optional(),
+	trust_score: z.number().min(0).max(3).default(3),
+	trust_factors: trustFactorsSchema.optional(),
+	updated_at: z.string().optional(),
+});
+
+export type Profile = z.infer<typeof profileSchema>;
