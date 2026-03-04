@@ -1,5 +1,8 @@
--- Fix get_profiles_with_emails to match expected types and include trust scoring data
+-- Fix get_profiles_with_emails to match expected types and remove outdated trust scoring data
 -- This function merges data from public.profiles and auth.users for the Admin Dashboard
+
+-- Drop the function first because return types (columns) are changing
+DROP FUNCTION IF EXISTS public.get_profiles_with_emails();
 
 CREATE OR REPLACE FUNCTION public.get_profiles_with_emails()
 RETURNS TABLE (
@@ -14,8 +17,7 @@ RETURNS TABLE (
   joined_date TIMESTAMPTZ,
   last_sign_in_at TIMESTAMPTZ,
   reports_count BIGINT,
-  trust_score SMALLINT,
-  trust_factors JSONB
+  trust_score SMALLINT
 ) 
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -34,8 +36,7 @@ BEGIN
     u.created_at as joined_date,
     u.last_sign_in_at,
     (SELECT count(*) FROM public.reports r WHERE r.reporter_id = p.id) as reports_count,
-    p.trust_score,
-    p.trust_factors
+    p.trust_score
   FROM 
     public.profiles p
   LEFT JOIN 

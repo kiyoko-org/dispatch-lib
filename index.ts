@@ -8,8 +8,6 @@ import {
 	hotlineSchema, 
 	reportSchema, 
 	lostAndFoundSchema, 
-	trustFactorsSchema,
-	type TrustFactors,
 	type Profile
 } from "./types";
 
@@ -164,7 +162,7 @@ export class DispatchClient {
 				if (res.ok) {
 					return { data, error: null };
 				}
-				return { data: null, error: { message: data.error || `API Error: ${res.status}` } };
+				return { data: null, error: { message: (data as any).error || `API Error: ${res.status}` } };
 			} catch (err: any) {
 				return { data: null, error: { message: err.message } };
 			}
@@ -189,7 +187,7 @@ export class DispatchClient {
 				if (res.ok) {
 					return { data: [data], error: null };
 				}
-				return { data: null, error: { message: data.error || `API Error: ${res.status}` } };
+				return { data: null, error: { message: (data as any).error || `API Error: ${res.status}` } };
 			} catch (err: any) {
 				return { data: null, error: { message: err.message } };
 			}
@@ -209,7 +207,7 @@ export class DispatchClient {
 		const { data: profile } = await this.supabase.from('profiles').select('trust_score').eq('id', userId).single();
 		if (!profile) return { error: "Profile not found" };
 
-		const currentScore = profile.trust_score ?? 3;
+		const currentScore = profile.trust_score ?? 0;
 		if (currentScore >= 3) return { data: profile, error: null };
 		return this.updateTrustScore(userId, currentScore + 1);
 	}
@@ -218,25 +216,9 @@ export class DispatchClient {
 		const { data: profile } = await this.supabase.from('profiles').select('trust_score').eq('id', userId).single();
 		if (!profile) return { error: "Profile not found" };
 
-		const currentScore = profile.trust_score ?? 3;
+		const currentScore = profile.trust_score ?? 0;
 		if (currentScore <= 0) return { data: profile, error: null };
 		return this.updateTrustScore(userId, currentScore - 1);
-	}
-
-	updateTrustFactors = async (userId: string, factors: Partial<TrustFactors>) => {
-		const { data: profile } = await this.supabase.from('profiles').select('trust_factors').eq('id', userId).single();
-		const currentFactors = (profile?.trust_factors as any) || {};
-		const mergedFactors = { ...currentFactors, ...(factors as any) };
-		const validated = trustFactorsSchema.parse(mergedFactors);
-
-		return this.supabase
-			.from('profiles')
-			.update({
-				trust_factors: validated,
-				updated_at: new Date().toISOString()
-			})
-			.eq('id', userId)
-			.select();
 	}
 
 	getCategories = async () => {

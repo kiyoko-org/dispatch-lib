@@ -4,7 +4,7 @@ export const hotlineSchema = z.object({
 	id: z.number().optional(),
 	name: z.string().min(1, "Name is required"),
 	phone_number: z.string().min(1, "Phone number is required"),
-	description: z.string().optional(),
+	description: z.string().nullable().optional(),
 	created_at: z.string().optional(),
 	available: z.boolean().optional().default(true),
 })
@@ -41,7 +41,7 @@ export const reportSchema = z.object({
 	witness_contact_info: z.string().nullable().optional(),
 	attachments: z.array(z.string()).nullable().optional(),
 	status: z.string().optional(),
-	false_report: z.boolean().optional().default(false),
+	cancellation_reason: z.string().nullable().optional(),
 	police_notes: z.string().nullable().optional(),
 	is_archived: z.boolean().nullable().optional().default(false),
 	resolved_at: z.string().nullable().optional(),
@@ -79,16 +79,6 @@ export const witnessSchema = z.object({
 
 export type Witness = z.infer<typeof witnessSchema>;
 
-export const trustFactorsSchema = z.object({
-	total_reports: z.number().default(0),
-	verified_reports: z.number().default(0),
-	false_reports: z.number().default(0),
-	cancelled_reports: z.number().default(0),
-	avg_response_time_minutes: z.number().nullable().default(null),
-}).catchall(z.any());
-
-export type TrustFactors = z.infer<typeof trustFactorsSchema>;
-
 export const profileSchema = z.object({
 	id: z.string(),
 	first_name: z.string().nullable().optional(),
@@ -97,8 +87,7 @@ export const profileSchema = z.object({
 	avatar_url: z.string().nullable().optional(),
 	phone_number: z.string().nullable().optional(),
 	role: z.enum(["admin", "officer", "user"]).optional(),
-	trust_score: z.number().min(0).max(3).default(3),
-	trust_factors: trustFactorsSchema.optional(),
+	trust_score: z.number().min(0).max(3).default(0),
 	updated_at: z.string().optional(),
 });
 

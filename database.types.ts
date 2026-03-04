@@ -277,7 +277,6 @@ export type Database = {
           role: Database["public"]["Enums"]["role"]
           sex: string | null
           suffix: string | null
-          trust_factors: Json | null
           trust_score: number | null
           updated_at: string | null
           user_type: string | null
@@ -299,7 +298,6 @@ export type Database = {
           role?: Database["public"]["Enums"]["role"]
           sex?: string | null
           suffix?: string | null
-          trust_factors?: Json | null
           trust_score?: number | null
           updated_at?: string | null
           user_type?: string | null
@@ -321,7 +319,6 @@ export type Database = {
           role?: Database["public"]["Enums"]["role"]
           sex?: string | null
           suffix?: string | null
-          trust_factors?: Json | null
           trust_score?: number | null
           updated_at?: string | null
           user_type?: string | null
@@ -333,9 +330,9 @@ export type Database = {
           archived_date: string | null
           arrived_at: string | null
           attachments: string[] | null
+          cancellation_reason: string | null
           category_id: number | null
           created_at: string
-          false_report: boolean
           id: number
           incident_date: string | null
           incident_time: string | null
@@ -364,9 +361,9 @@ export type Database = {
           archived_date?: string | null
           arrived_at?: string | null
           attachments?: string[] | null
+          cancellation_reason?: string | null
           category_id?: number | null
           created_at?: string
-          false_report?: boolean
           id?: number
           incident_date?: string | null
           incident_time?: string | null
@@ -395,9 +392,9 @@ export type Database = {
           archived_date?: string | null
           arrived_at?: string | null
           attachments?: string[] | null
+          cancellation_reason?: string | null
           category_id?: number | null
           created_at?: string
-          false_report?: boolean
           id?: number
           incident_date?: string | null
           incident_time?: string | null
@@ -473,9 +470,9 @@ export type Database = {
           archived_date: string | null
           arrived_at: string | null
           attachments: string[] | null
+          cancellation_reason: string | null
           category_id: number | null
           created_at: string
-          false_report: boolean
           id: number
           incident_date: string | null
           incident_time: string | null
@@ -533,8 +530,8 @@ export type Database = {
           middle_name: string
           reports_count: number
           role: string
-          trust_score: number
           trust_factors: Json
+          trust_score: number
         }[]
       }
       get_resolved_reports: {
@@ -558,10 +555,6 @@ export type Database = {
         Returns: {
           exists: boolean
         }[]
-      }
-      recalculate_user_trust_score: {
-        Args: { user_uuid: string }
-        Returns: undefined
       }
       sign_out_with_id: {
         Args: { id_card_number_input: string }
