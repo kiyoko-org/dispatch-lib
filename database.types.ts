@@ -254,6 +254,13 @@ export type Database = {
             foreignKeyName: "officers_assigned_report_id_fkey"
             columns: ["assigned_report_id"]
             isOneToOne: false
+            referencedRelation: "incident_reports_with_trust"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "officers_assigned_report_id_fkey"
+            columns: ["assigned_report_id"]
+            isOneToOne: false
             referencedRelation: "reports"
             referencedColumns: ["id"]
           },
@@ -461,7 +468,56 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      incident_reports_with_trust: {
+        Row: {
+          archived_date: string | null
+          arrived_at: string | null
+          attachments: string[] | null
+          cancellation_reason: string | null
+          category_id: number | null
+          created_at: string | null
+          id: number | null
+          incident_date: string | null
+          incident_time: string | null
+          incident_title: string | null
+          injuries_reported: string | null
+          is_archived: boolean | null
+          latitude: number | null
+          longitude: number | null
+          nearby_landmark: string | null
+          number_of_witnesses: string | null
+          officers_involved: string[] | null
+          police_notes: string | null
+          property_damage: string | null
+          reporter_id: string | null
+          reporter_trust_score: number | null
+          resolved_at: string | null
+          status: string | null
+          street_address: string | null
+          sub_category: number | null
+          suspect_description: string | null
+          what_happened: string | null
+          who_was_involved: string | null
+          witness_contact_info: string | null
+          witnesses: Json[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       append_witness: {
@@ -530,7 +586,6 @@ export type Database = {
           middle_name: string
           reports_count: number
           role: string
-          trust_factors: Json
           trust_score: number
         }[]
       }

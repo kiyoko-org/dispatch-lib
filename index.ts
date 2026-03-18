@@ -36,6 +36,13 @@ export interface DispatchClientOptions {
  */
 class DispatchAuthClient extends SupabaseAuthClient { }
 
+type ProfilesWithEmails = Database["public"]["Functions"]["get_profiles_with_emails"]["Returns"];
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type ProxyResponse<T> = {
+	data: T | null;
+	error: { message: string } | null;
+};
+
 /**
  * DispatchClient is a singleton that holds a private Supabase client instance.
  * The Supabase client is NOT exported from the library — it stays private inside the singleton.
@@ -147,6 +154,67 @@ export class DispatchClient {
 		return this.supabase.from('hotlines').delete().eq('id', id).select();
 	}
 
+	private async getProxyAccessToken() {
+		const {
+			data: { session },
+			error,
+		} = await this.supabase.auth.getSession();
+
+		if (error) {
+			console.error("Failed to read Supabase session for proxy request:", error.message);
+			return null;
+		}
+
+		return session?.access_token ?? null;
+	}
+
+	private async proxyJsonRequest<T>(path: string, init: RequestInit = {}): Promise<ProxyResponse<T>> {
+		try {
+			const accessToken = await this.getProxyAccessToken();
+			const headers = new Headers(init.headers);
+
+			if (init.body && !headers.has("Content-Type")) {
+				headers.set("Content-Type", "application/json");
+			}
+
+			if (!headers.has("Accept")) {
+				headers.set("Accept", "application/json");
+			}
+
+			if (accessToken) {
+				headers.set("Authorization", `Bearer ${accessToken}`);
+			}
+
+			const requestInit = {
+				...init,
+				headers,
+				cache: "no-store",
+			} as unknown as RequestInit;
+
+			const response = await fetch(path, requestInit);
+
+			const responseText = await response.text();
+			const payload: unknown = responseText ? JSON.parse(responseText) : null;
+
+			if (response.ok) {
+				return { data: payload as T, error: null };
+			}
+
+			const errorMessage =
+				typeof payload === "object" &&
+				payload !== null &&
+				"error" in payload &&
+				typeof payload.error === "string"
+					? payload.error
+					: `API Error: ${response.status}`;
+
+			return { data: null, error: { message: errorMessage } };
+		} catch (error) {
+			const message = error instanceof Error ? error.message : "Proxy request failed";
+			return { data: null, error: { message } };
+		}
+	}
+
 	fetchProfiles = async () => {
 		return this.supabase.rpc("get_profiles_with_emails")
 	}
@@ -156,16 +224,7 @@ export class DispatchClient {
 	 */
 	fetchProfilesWithEmails = async () => {
 		if (this.useProxy) {
-			try {
-				const res = await fetch("/api/profiles");
-				const data = await res.json();
-				if (res.ok) {
-					return { data, error: null };
-				}
-				return { data: null, error: { message: (data as any).error || `API Error: ${res.status}` } };
-			} catch (err: any) {
-				return { data: null, error: { message: err.message } };
-			}
+			return this.proxyJsonRequest<ProfilesWithEmails>("/api/profiles");
 		}
 		return this.supabase.rpc("get_profiles_with_emails");
 	}
@@ -177,20 +236,15 @@ export class DispatchClient {
 		const validatedScore = Math.max(0, Math.min(3, score));
 
 		if (this.useProxy) {
-			try {
-				const res = await fetch("/api/profiles", {
-					method: "PATCH",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ userId, trustScore: validatedScore })
-				});
-				const data = await res.json();
-				if (res.ok) {
-					return { data: [data], error: null };
-				}
-				return { data: null, error: { message: (data as any).error || `API Error: ${res.status}` } };
-			} catch (err: any) {
-				return { data: null, error: { message: err.message } };
-			}
+			const result = await this.proxyJsonRequest<ProfileRow>("/api/profiles", {
+				method: "PATCH",
+				body: JSON.stringify({ userId, trustScore: validatedScore }),
+			});
+
+			return {
+				data: result.data ? [result.data] : null,
+				error: result.error,
+			};
 		}
 
 		return this.supabase

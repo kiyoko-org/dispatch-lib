@@ -1,6 +1,9 @@
 {
 	"name": "dispatch-lib",
 	"version": "0.0.2",
+	"scripts": {
+		"sync-types": "bunx supabase gen types typescript --project-id ${SUPABASE_PROJECT_ID:-$(tr -d '\n' < supabase/.temp/project-ref)} --schema public > database.types.ts"
+	},
 	"module": "index.ts",
 	"type": "module",
 	"description": "A dispatch library for managing emergency services and officer dispatch",
