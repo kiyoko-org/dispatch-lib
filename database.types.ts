@@ -276,6 +276,7 @@ export type Database = {
           first_name: string | null
           id: string
           id_card_number: string | null
+          is_verified: boolean | null
           last_name: string | null
           middle_name: string | null
           permanent_address_1: string | null
@@ -297,6 +298,7 @@ export type Database = {
           first_name?: string | null
           id: string
           id_card_number?: string | null
+          is_verified?: boolean | null
           last_name?: string | null
           middle_name?: string | null
           permanent_address_1?: string | null
@@ -318,6 +320,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           id_card_number?: string | null
+          is_verified?: boolean | null
           last_name?: string | null
           middle_name?: string | null
           permanent_address_1?: string | null

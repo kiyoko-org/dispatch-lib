@@ -88,6 +88,7 @@ export const profileSchema = z.object({
 	phone_number: z.string().nullable().optional(),
 	role: z.enum(["admin", "officer", "user"]).optional(),
 	trust_score: z.number().min(0).max(3).default(0),
+	is_verified: z.boolean().nullable().optional(),
 	updated_at: z.string().optional(),
 });
 
