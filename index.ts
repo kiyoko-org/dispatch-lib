@@ -3,6 +3,14 @@ import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
 import {
+	VERIFICATION_DOCS_BUCKET,
+	buildVerificationStoragePath,
+	getVerificationFileExtension,
+	validateVerificationFile,
+	type VerificationDocumentSide,
+	type VerificationUploadBody,
+} from "./verification";
+import {
 	barangaySchema,
 	categorySchema,
 	hotlineSchema,
@@ -272,6 +280,51 @@ export class DispatchClient {
 		});
 	}
 
+	uploadVerificationDocument = async ({
+		fileBody,
+		fileSizeBytes,
+		mimeType,
+		profileId,
+		requestId,
+		side,
+		cacheControl = "3600",
+	}: {
+		fileBody: VerificationUploadBody;
+		fileSizeBytes: number;
+		mimeType: string;
+		profileId: string;
+		requestId: string;
+		side: VerificationDocumentSide;
+		cacheControl?: string;
+	}) => {
+		const validation = validateVerificationFile({ mimeType, sizeBytes: fileSizeBytes });
+		if (!validation.isValid) {
+			throw new Error(validation.error ?? "Invalid verification file");
+		}
+
+		const storagePath = buildVerificationStoragePath({
+			profileId,
+			requestId,
+			side,
+			fileExtension: getVerificationFileExtension(mimeType),
+		});
+
+		const { data, error } = await this.supabase
+			.storage
+			.from(VERIFICATION_DOCS_BUCKET)
+			.upload(storagePath, fileBody, {
+				cacheControl,
+				contentType: mimeType,
+				upsert: false,
+			});
+
+		return {
+			data,
+			error,
+			path: storagePath,
+		};
+	}
+
 	getVerificationDocumentSignedUrl = async (
 		storagePath: string,
 		expiresInSeconds: number = 60 * 60,
@@ -282,7 +335,7 @@ export class DispatchClient {
 
 		return this.supabase
 			.storage
-			.from('verification-docs')
+			.from(VERIFICATION_DOCS_BUCKET)
 			.createSignedUrl(storagePath, expiresInSeconds);
 	}
 
@@ -517,6 +570,7 @@ export async function isEmailRegistered(email: string) {
 
 export * from "./id";
 export * from "./types";
+export * from "./verification";
 export * from "./react/providers/auth-provider";
 export * from "./react/providers/officer-auth-provider";
 export * from "./react/hooks/useHotlines";
