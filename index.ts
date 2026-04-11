@@ -2,13 +2,17 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { SupabaseClient, SupportedStorage } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import type { Database } from "./database.types";
-import { 
-	barangaySchema, 
-	categorySchema, 
-	hotlineSchema, 
-	reportSchema, 
-	lostAndFoundSchema, 
-	type Profile
+import {
+	barangaySchema,
+	categorySchema,
+	hotlineSchema,
+	lostAndFoundSchema,
+	reportSchema,
+	verificationRequestInsertSchema,
+	verificationReviewDecisionSchema,
+	type Profile,
+	type VerificationRequestStatus,
+	type VerificationReviewDecision,
 } from "./types";
 
 interface SupabaseClientOptions {
@@ -38,6 +42,7 @@ class DispatchAuthClient extends SupabaseAuthClient { }
 
 type ProfilesWithEmails = Database["public"]["Functions"]["get_profiles_with_emails"]["Returns"];
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type VerificationRequestInsertRow = Database["public"]["Tables"]["verification_requests"]["Insert"];
 type ProxyResponse<T> = {
 	data: T | null;
 	error: { message: string } | null;
@@ -227,6 +232,58 @@ export class DispatchClient {
 			return this.proxyJsonRequest<ProfilesWithEmails>("/api/profiles");
 		}
 		return this.supabase.rpc("get_profiles_with_emails");
+	}
+
+	fetchMyVerificationRequests = async () => {
+		return this.supabase
+			.from('verification_requests')
+			.select('*')
+			.order('created_at', { ascending: false });
+	}
+
+	fetchVerificationRequests = async (status?: VerificationRequestStatus) => {
+		let query = this.supabase
+			.from('verification_requests')
+			.select('*')
+			.order('created_at', { ascending: false });
+
+		if (!status) return query;
+		return query.eq('status', status);
+	}
+
+	submitVerificationRequest = async (payload: VerificationRequestInsertRow) => {
+		const validated = verificationRequestInsertSchema.parse(payload);
+		return this.supabase
+			.from('verification_requests')
+			.insert(validated)
+			.select();
+	}
+
+	reviewVerificationRequest = async (
+		requestId: string,
+		decision: VerificationReviewDecision,
+		reviewNotes?: string | null,
+	) => {
+		const validatedDecision = verificationReviewDecisionSchema.parse(decision);
+		return this.supabase.rpc('review_verification_request', {
+			request_id_param: requestId,
+			decision: validatedDecision,
+			review_notes_param: reviewNotes ?? null,
+		});
+	}
+
+	getVerificationDocumentSignedUrl = async (
+		storagePath: string,
+		expiresInSeconds: number = 60 * 60,
+	) => {
+		if (!storagePath) {
+			throw new Error("storagePath is required");
+		}
+
+		return this.supabase
+			.storage
+			.from('verification-docs')
+			.createSignedUrl(storagePath, expiresInSeconds);
 	}
 
 	/**

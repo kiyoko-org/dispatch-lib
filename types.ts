@@ -93,3 +93,55 @@ export const profileSchema = z.object({
 });
 
 export type Profile = z.infer<typeof profileSchema>;
+
+export const verificationDocumentTypeSchema = z.enum([
+	"drivers_license",
+	"passport",
+	"postal_id",
+	"umid",
+	"other",
+]);
+
+export type VerificationDocumentType = z.infer<typeof verificationDocumentTypeSchema>;
+
+export const verificationRequestStatusSchema = z.enum([
+	"pending",
+	"approved",
+	"rejected",
+]);
+
+export type VerificationRequestStatus = z.infer<typeof verificationRequestStatusSchema>;
+
+export const verificationReviewDecisionSchema = z.enum([
+	"approved",
+	"rejected",
+]);
+
+export type VerificationReviewDecision = z.infer<typeof verificationReviewDecisionSchema>;
+
+export const verificationRequestSchema = z.object({
+	id: z.string().uuid(),
+	profile_id: z.string().uuid(),
+	document_type: verificationDocumentTypeSchema,
+	front_storage_path: z.string().min(1),
+	back_storage_path: z.string().nullable(),
+	status: verificationRequestStatusSchema,
+	review_notes: z.string().nullable(),
+	reviewed_at: z.string().nullable(),
+	reviewed_by: z.string().uuid().nullable(),
+	created_at: z.string(),
+	updated_at: z.string(),
+});
+
+export type VerificationRequest = z.infer<typeof verificationRequestSchema>;
+
+export const verificationRequestInsertSchema = z.object({
+	id: z.string().uuid().optional(),
+	profile_id: z.string().uuid(),
+	document_type: verificationDocumentTypeSchema,
+	front_storage_path: z.string().min(1),
+	back_storage_path: z.string().nullable().optional(),
+	status: verificationRequestStatusSchema.default("pending").optional(),
+});
+
+export type VerificationRequestInsert = z.infer<typeof verificationRequestInsertSchema>;

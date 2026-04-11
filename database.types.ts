@@ -469,6 +469,63 @@ export type Database = {
           },
         ]
       }
+      verification_requests: {
+        Row: {
+          back_storage_path: string | null
+          created_at: string
+          document_type: Database["public"]["Enums"]["verification_document_type"]
+          front_storage_path: string
+          id: string
+          profile_id: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["verification_request_status"]
+          updated_at: string
+        }
+        Insert: {
+          back_storage_path?: string | null
+          created_at?: string
+          document_type: Database["public"]["Enums"]["verification_document_type"]
+          front_storage_path: string
+          id?: string
+          profile_id: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["verification_request_status"]
+          updated_at?: string
+        }
+        Update: {
+          back_storage_path?: string | null
+          created_at?: string
+          document_type?: Database["public"]["Enums"]["verification_document_type"]
+          front_storage_path?: string
+          id?: string
+          profile_id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["verification_request_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_requests_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verification_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       incident_reports_with_trust: {
@@ -583,6 +640,7 @@ export type Database = {
           email: string
           first_name: string
           id: string
+          is_verified: boolean
           joined_date: string
           last_name: string
           last_sign_in_at: string
@@ -614,6 +672,26 @@ export type Database = {
           exists: boolean
         }[]
       }
+      review_verification_request: {
+        Args: {
+          decision: Database["public"]["Enums"]["verification_review_decision"]
+          request_id_param: string
+          review_notes_param?: string
+        }
+        Returns: {
+          back_storage_path: string
+          created_at: string
+          document_type: Database["public"]["Enums"]["verification_document_type"]
+          front_storage_path: string
+          id: string
+          profile_id: string
+          review_notes: string
+          reviewed_at: string
+          reviewed_by: string
+          status: Database["public"]["Enums"]["verification_request_status"]
+          updated_at: string
+        }[]
+      }
       sign_out_with_id: {
         Args: { id_card_number_input: string }
         Returns: Json
@@ -624,6 +702,14 @@ export type Database = {
       laf: "lost" | "found"
       lost_and_found_type: "lost" | "found"
       role: "admin" | "officer" | "user"
+      verification_document_type:
+        | "drivers_license"
+        | "passport"
+        | "postal_id"
+        | "umid"
+        | "other"
+      verification_request_status: "pending" | "approved" | "rejected"
+      verification_review_decision: "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -754,6 +840,15 @@ export const Constants = {
       laf: ["lost", "found"],
       lost_and_found_type: ["lost", "found"],
       role: ["admin", "officer", "user"],
+      verification_document_type: [
+        "drivers_license",
+        "passport",
+        "postal_id",
+        "umid",
+        "other",
+      ],
+      verification_request_status: ["pending", "approved", "rejected"],
+      verification_review_decision: ["approved", "rejected"],
     },
   },
 } as const
