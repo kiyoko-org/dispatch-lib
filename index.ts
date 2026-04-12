@@ -15,6 +15,7 @@ import {
 	categorySchema,
 	hotlineSchema,
 	lostAndFoundSchema,
+	profileSchema,
 	reportSchema,
 	verificationRequestInsertSchema,
 	verificationReviewDecisionSchema,
@@ -365,6 +366,26 @@ export class DispatchClient {
 			})
 			.eq('id', userId)
 			.select();
+	}
+
+	updateProfile = async (
+		userId: string,
+		payload: Partial<Database["public"]["Tables"]["profiles"]["Update"]>,
+	) => {
+		const validated = profileSchema
+			.omit({ id: true, role: true, trust_score: true, is_verified: true, updated_at: true, fcm_token: true, user_type: true })
+			.partial()
+			.parse(payload);
+
+		return this.supabase
+			.from('profiles')
+			.update({
+				...validated,
+				updated_at: new Date().toISOString(),
+			})
+			.eq('id', userId)
+			.select()
+			.single();
 	}
 
 	incrementTrustScore = async (userId: string) => {

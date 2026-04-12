@@ -86,10 +86,20 @@ export const profileSchema = z.object({
 	last_name: z.string().nullable().optional(),
 	avatar_url: z.string().nullable().optional(),
 	phone_number: z.string().nullable().optional(),
+	id_card_number: z.string().nullable().optional(),
+	suffix: z.string().nullable().optional(),
+	sex: z.string().nullable().optional(),
+	birth_date: z.string().nullable().optional(),
+	permanent_address_1: z.string().nullable().optional(),
+	permanent_address_2: z.string().nullable().optional(),
+	birth_city: z.string().nullable().optional(),
+	birth_province: z.string().nullable().optional(),
+	fcm_token: z.string().nullable().optional(),
+	user_type: z.string().nullable().optional(),
 	role: z.enum(["admin", "officer", "user"]).optional(),
 	trust_score: z.number().min(0).max(3).default(0),
 	is_verified: z.boolean().nullable().optional(),
-	updated_at: z.string().optional(),
+	updated_at: z.string().nullable().optional(),
 });
 
 export type Profile = z.infer<typeof profileSchema>;
